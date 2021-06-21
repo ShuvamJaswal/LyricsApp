@@ -1,29 +1,23 @@
 import 'dart:convert';
-import 'dart:io';
-import 'api_key.dart';
 import 'package:http/http.dart' as http;
+import 'package:html/parser.dart';
 
-Future<String> searchSongMetaData(String songData, String searchTerm) async {
-  print(searchTerm);
-  var retreivedData = await http.get(
-    Uri.parse('https://genius.com/api/songs/$songData'),
+Future<String> songMetadata(String searchTerm) async {
+  searchTerm = searchTerm.replaceAll(' ', '%20');
+  var data = await http.get(
+    Uri.parse('https://genius.com/api/search/song?q=$searchTerm'),
   );
-  // var retreivedData = await http
-  //     .get(Uri.parse('https://api.genius.com/songs/2458848'), headers: {
-  //   'Content-Type': 'application/json',
-  //   'Accept': 'application/json',
-  //   'Authorization': 'Bearer ' +
-  //       'x4KmXM_uZWffDM2dLXbubQ8QFRYrzXnsM58V8oKYSxHSCT2sykPkao7xUEsbixOU'
-  // });
-  lyricsUrl = "https://genius.com" +
-      jsonDecode(retreivedData.body)['response']['song']['path'].toString();
-  //print(lyricsUrl);
-  return lyricsUrl;
+  final url = await 'https://genius.com' +
+      jsonDecode(data.body)['response']['sections'][0]['hits'][0]['result']
+          ['path'];
+  print(url);
+  return url;
 }
 
-Future<String> fetchLyrics(String lyricsUrl) async {
-  var retreivedLyricsData = await http.get(
-    Uri.parse(lyricsUrl),
-  );
-  return retreivedLyricsData.body.toString();
+Future<String> scrapLyrics(String lyricsUrl) async {
+  final response = await http.get(Uri.parse(lyricsUrl));
+  var document = parse(response.body);
+
+  return document.getElementsByClassName('lyrics')[0].text;
+  //[0].text;
 }
