@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:lyrics/functionality/search_lyrics.dart';
+import '../widgets/searchResultContainer.dart';
 
 class TheBeastLyricsHomePage extends StatefulWidget {
   @override
@@ -12,7 +12,6 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
   String lyricsUrl = '';
   String lyricsData = '';
   bool isLoading = false;
-  final roundLoadingButtonController = RoundedLoadingButtonController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,12 +20,13 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
           'TheBeastLyrics',
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SearchResultContainer(),
+            TextField(
               controller: songFieldInputController,
               autofocus: false,
               decoration: InputDecoration(
@@ -38,29 +38,29 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
                 labelText: "Enter Term to search.",
               ),
             ),
-          ),
-          TextButton(
-              onPressed: () async {
-                isLoading = true;
-                lyricsUrl = await songMetadata(songFieldInputController.text);
-                lyricsData = await scrapLyrics(lyricsUrl);
+            TextButton(
+                onPressed: () async {
+                  isLoading = true;
+                  lyricsUrl = await songMetadata(songFieldInputController.text);
+                  lyricsData = await scrapLyrics(lyricsUrl);
 
-                setState(() {
-                  lyricsData;
-                });
-              },
-              child: Text("Search")),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: SingleChildScrollView(
-                child: Text(
-              lyricsData,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20),
-            )),
-          ))
-        ],
+                  setState(() {
+                    lyricsData;
+                  });
+                },
+                child: Text("Search")),
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SingleChildScrollView(
+                  child: Text(
+                lyricsData,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20),
+              )),
+            ))
+          ],
+        ),
       ),
     );
   }

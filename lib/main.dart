@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lyrics/screens/songDataScreen.dart';
 
 import 'screens/TheBeastLyricsHomePage.dart';
 
@@ -17,6 +18,7 @@ class _LyricsAppState extends State<LyricsApp> {
     return MaterialApp(
       title: "The Beast Lyrics",
       home: TheBeastLyricsHomePage(),
+      routes: {SongDataScreen.route: (context) => TheBeastLyricsHomePage()},
     );
   }
 }
