@@ -15,9 +15,26 @@ Future<String> songMetadata(String searchTerm) async {
 Future<String> scrapLyrics(String lyricsUrl) async {
   String result = "wait";
   final response = await http.get(Uri.parse("https://genius.com" + lyricsUrl));
-  var document = parse(response.body);
+  var document = parse(response.body.replaceAll('<br/>', '\n'));
   try {
-    if (response.body.contains("<!doctype")) {
+    return document
+        .querySelectorAll("[class*='Lyrics__Root'],div.lyrics")[0]
+        .text;
+  } catch (Exception, e) {
+    print(e);
+    return "Something went wrong please try again";
+  }
+}
+
+
+
+/*
+
+older parsing code(before try)
+var document = parse(response.body);
+OLDER TRY CODE
+
+  if (response.body.contains("<!doctype")) {
       var abc = [
         for (var element in document.querySelectorAll(
             "*[class^='ReferentFragment__Highlight-oqvzi6-1']"))
@@ -39,9 +56,5 @@ Future<String> scrapLyrics(String lyricsUrl) async {
     } else {
       result = document.getElementsByClassName('lyrics')[0].text.trim();
     }
-  } catch (Exception, e) {
-    print(e);
-    result = "Something went wrong please try again";
-  }
-  return result;
-}
+
+*/
