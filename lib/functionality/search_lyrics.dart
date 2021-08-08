@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 
 Future<String> songMetadata(String searchTerm) async {
+  if (searchTerm == "") {
+    return "";
+  }
   searchTerm = searchTerm.replaceAll(' ', '%20');
   var data = await http.get(
     Uri.parse('https://genius.com/api/search/song?q=$searchTerm'),
@@ -13,18 +16,29 @@ Future<String> songMetadata(String searchTerm) async {
 }
 
 Future<String> scrapLyrics(String lyricsUrl) async {
+  if (lyricsUrl == "") {
+    return "";
+  }
   String result = "wait";
   final response = await http.get(Uri.parse("https://genius.com" + lyricsUrl));
   var document = parse(response.body.replaceAll('<br/>', '\n'));
   try {
     return document
         .querySelectorAll("[class*='Lyrics__Root'],div.lyrics")[0]
-        .text;
+        .text
+        .trim();
   } catch (Exception, e) {
     print(e);
-    return "Something went wrong please try again";
+    return "Something went wrong";
   }
 }
+
+
+
+
+
+
+
 
 
 
