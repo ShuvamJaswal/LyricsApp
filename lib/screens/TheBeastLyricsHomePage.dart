@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lyrics/functionality/search_lyrics.dart';
 import '../widgets/searchResultContainer.dart';
+import '../models/metadata_model.dart';
 
 class TheBeastLyricsHomePage extends StatefulWidget {
   @override
@@ -8,7 +9,7 @@ class TheBeastLyricsHomePage extends StatefulWidget {
 }
 
 class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
-  final songFieldInputController = TextEditingController();
+  final _songFieldInputController = TextEditingController();
   String lyricsUrl = '';
   String lyricsData = '';
   bool _isSearchLoading = false;
@@ -32,10 +33,11 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   child: TextField(
-                    controller: songFieldInputController,
+                    controller: _songFieldInputController,
                     autofocus: false,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -53,47 +55,25 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
                       ? null
                       : () async {
                           _toggleSearchLoading();
-                          lyricsUrl = await songMetadata(
-                              songFieldInputController.text.trim());
+                          MetaDataModel metaData = await songMetadata(
+                              _songFieldInputController.text.trim());
+                          lyricsUrl = metaData.songUrl;
+                          print(metaData.songUrl);
                           lyricsData = await scrapLyrics(lyricsUrl.trim());
 
                           setState(() {
-                            lyricsData;
+                            lyricsUrl;
                           });
                           _toggleSearchLoading();
                         },
                   icon: Icon(
                     Icons.search,
+                    size: 30,
                   ),
                 ),
               ],
             ),
-            Row(
-              children: [
-                TextButton(
-                    onPressed: _isSearchLoading
-                        ? null
-                        : () async {
-                            _toggleSearchLoading();
-                            lyricsUrl = await songMetadata(
-                                songFieldInputController.text.trim());
-                            lyricsData = await scrapLyrics(lyricsUrl.trim());
-
-                            setState(() {
-                              lyricsData;
-                            });
-                            _toggleSearchLoading();
-                          },
-                    child: Column(
-                      children: [
-                        Text(
-                          "Search",
-                        ),
-                      ],
-                    )),
-              ],
-            ),
-            SearchResultContainer(),
+            // SearchResultContainer(),
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.all(20.0),

@@ -1,18 +1,29 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
+import 'package:lyrics/models/metadata_model.dart';
 
-Future<String> songMetadata(String searchTerm) async {
-  if (searchTerm == "") {
-    return "";
+Future<MetaDataModel> songMetadata(String searchTerm) async {
+  if (searchTerm != "") {
+    searchTerm = searchTerm.replaceAll(' ', '%20');
+
+    var response = await http.get(
+      Uri.parse('https://genius.com/api/search/song?q=$searchTerm'),
+    );
+
+    if (response.statusCode == 200) {
+      print(MetaDataModel.fromJson(jsonDecode(response.body)).songUrl);
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      return MetaDataModel.fromJson(jsonDecode(response.body));
+      // final url = jsonDecode(data.body)['response']['sections'][0]['hits'][0]['result']['path'];
+      // return url;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load data');
+    }
   }
-  searchTerm = searchTerm.replaceAll(' ', '%20');
-  var data = await http.get(
-    Uri.parse('https://genius.com/api/search/song?q=$searchTerm'),
-  );
-  final url = jsonDecode(data.body)['response']['sections'][0]['hits'][0]
-      ['result']['path'];
-  return url;
 }
 
 Future<String> scrapLyrics(String lyricsUrl) async {
