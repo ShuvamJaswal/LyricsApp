@@ -12,13 +12,7 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
   final _songFieldInputController = TextEditingController();
   String lyricsUrl = '';
   String lyricsData = '';
-  bool _isSearchLoading = false;
-  void _toggleSearchLoading() {
-    setState(() {
-      _isSearchLoading = !_isSearchLoading;
-    });
-  }
-
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +26,7 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+<<<<<<< HEAD
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -69,11 +64,36 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
                   icon: Icon(
                     Icons.search,
                     size: 30,
+=======
+            SearchResultContainer(),
+            TextField(
+              controller: songFieldInputController,
+              autofocus: false,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+>>>>>>> parent of 07098bf... added search icon button
                   ),
                 ),
-              ],
+                labelText: "Enter Term to search.",
+              ),
             ),
+<<<<<<< HEAD
             // SearchResultContainer(),
+=======
+            TextButton(
+                onPressed: () async {
+                  isLoading = true;
+                  lyricsUrl = await songMetadata(songFieldInputController.text);
+                  lyricsData = await scrapLyrics(lyricsUrl);
+
+                  setState(() {
+                    lyricsData;
+                  });
+                },
+                child: Text("Search")),
+>>>>>>> parent of 07098bf... added search icon button
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.all(20.0),

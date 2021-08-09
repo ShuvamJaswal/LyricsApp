@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
+<<<<<<< HEAD
 import 'package:lyrics/models/metadata_model.dart';
 
 Future<MetaDataModel> songMetadata(String searchTerm) async {
@@ -24,32 +25,32 @@ Future<MetaDataModel> songMetadata(String searchTerm) async {
       throw Exception('Failed to load data');
     }
   }
+=======
+
+Future<String> songMetadata(String searchTerm) async {
+  searchTerm = searchTerm.replaceAll(' ', '%20');
+  var data = await http.get(
+    Uri.parse('https://genius.com/api/search/song?q=$searchTerm'),
+  );
+  final url = jsonDecode(data.body)['response']['sections'][0]['hits'][0]
+      ['result']['path'];
+  return url;
+>>>>>>> parent of 07098bf... added search icon button
 }
 
 Future<String> scrapLyrics(String lyricsUrl) async {
-  if (lyricsUrl == "") {
-    return "";
-  }
   String result = "wait";
   final response = await http.get(Uri.parse("https://genius.com" + lyricsUrl));
   var document = parse(response.body.replaceAll('<br/>', '\n'));
   try {
     return document
         .querySelectorAll("[class*='Lyrics__Root'],div.lyrics")[0]
-        .text
-        .trim();
+        .text;
   } catch (Exception, e) {
     print(e);
-    return "Something went wrong";
+    return "Something went wrong please try again";
   }
 }
-
-
-
-
-
-
-
 
 
 
