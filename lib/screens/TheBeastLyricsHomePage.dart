@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lyrics/functionality/search_lyrics.dart';
 import '../widgets/searchResultContainer.dart';
-import '../models/metadata_model.dart';
+import '../models/search_result_metadata_model.dart';
 
 class TheBeastLyricsHomePage extends StatefulWidget {
   @override
@@ -55,14 +55,15 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
                       ? null
                       : () async {
                           _toggleSearchLoading();
-                          MetaDataModel metaData = await songMetadata(
-                              _songFieldInputController.text.trim());
+                          SearchResultMetaDataModel metaData =
+                              await songMetadata(
+                                  _songFieldInputController.text.trim());
                           lyricsUrl = metaData.songUrl;
                           print(metaData.songUrl);
                           lyricsData = await scrapLyrics(lyricsUrl.trim());
 
                           setState(() {
-                            lyricsUrl;
+                            lyricsData;
                           });
                           _toggleSearchLoading();
                         },

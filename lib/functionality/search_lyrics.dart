@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
-import 'package:lyrics/models/metadata_model.dart';
+import 'package:lyrics/models/search_result_metadata_model.dart';
 
-Future<MetaDataModel> songMetadata(String searchTerm) async {
+Future<SearchResultMetaDataModel> songMetadata(String searchTerm) async {
   if (searchTerm != "") {
     searchTerm = searchTerm.replaceAll(' ', '%20');
 
@@ -12,10 +12,11 @@ Future<MetaDataModel> songMetadata(String searchTerm) async {
     );
 
     if (response.statusCode == 200) {
-      print(MetaDataModel.fromJson(jsonDecode(response.body)).songUrl);
+      print(SearchResultMetaDataModel.fromJson(jsonDecode(response.body))
+          .songUrl);
       // If the server did return a 200 OK response,
       // then parse the JSON.
-      return MetaDataModel.fromJson(jsonDecode(response.body));
+      return SearchResultMetaDataModel.fromJson(jsonDecode(response.body));
       // final url = jsonDecode(data.body)['response']['sections'][0]['hits'][0]['result']['path'];
       // return url;
     } else {
