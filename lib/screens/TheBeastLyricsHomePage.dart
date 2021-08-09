@@ -11,13 +11,7 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
   final songFieldInputController = TextEditingController();
   String lyricsUrl = '';
   String lyricsData = '';
-  bool _isSearchLoading = false;
-  void _toggleSearchLoading() {
-    setState(() {
-      _isSearchLoading = !_isSearchLoading;
-    });
-  }
-
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,69 +25,30 @@ class _TheBeastLyricsHomePageState extends State<TheBeastLyricsHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: songFieldInputController,
-                    autofocus: false,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      labelText: "Enter Term to search.",
-                    ),
-                  ),
-                ),
-                IconButton(
-                  color: Colors.blue,
-                  onPressed: _isSearchLoading
-                      ? null
-                      : () async {
-                          _toggleSearchLoading();
-                          lyricsUrl = await songMetadata(
-                              songFieldInputController.text.trim());
-                          lyricsData = await scrapLyrics(lyricsUrl.trim());
-
-                          setState(() {
-                            lyricsData;
-                          });
-                          _toggleSearchLoading();
-                        },
-                  icon: Icon(
-                    Icons.search,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                TextButton(
-                    onPressed: _isSearchLoading
-                        ? null
-                        : () async {
-                            _toggleSearchLoading();
-                            lyricsUrl = await songMetadata(
-                                songFieldInputController.text.trim());
-                            lyricsData = await scrapLyrics(lyricsUrl.trim());
-
-                            setState(() {
-                              lyricsData;
-                            });
-                            _toggleSearchLoading();
-                          },
-                    child: Column(
-                      children: [
-                        Text(
-                          "Search",
-                        ),
-                      ],
-                    )),
-              ],
-            ),
             SearchResultContainer(),
+            TextField(
+              controller: songFieldInputController,
+              autofocus: false,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                labelText: "Enter Term to search.",
+              ),
+            ),
+            TextButton(
+                onPressed: () async {
+                  isLoading = true;
+                  lyricsUrl = await songMetadata(songFieldInputController.text);
+                  lyricsData = await scrapLyrics(lyricsUrl);
+
+                  setState(() {
+                    lyricsData;
+                  });
+                },
+                child: Text("Search")),
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.all(20.0),
